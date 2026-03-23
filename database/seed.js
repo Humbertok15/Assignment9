@@ -11,31 +11,26 @@ async function seedDatabase() {
         const hashedPassword = await bcrypt.hash('password123', 10);
         
         const users = await User.bulkCreate([
-            {
-                name: 'John Employee',
-                email: 'john@company.com',
-                password: hashedPassword
-                // TODO: Add role: 'employee'
-
-
-            },
-            {
-                name: 'Sarah Manager',
-                email: 'sarah@company.com',
-                password: hashedPassword
-                // TODO: Add role: 'manager'
-
-
-            },
-            {
-                name: 'Mike Admin',
-                email: 'mike@company.com',
-                password: hashedPassword
-                // TODO: Add role: 'admin'
-
-                
-            }
-        ]);
+            id="u3"
+  {
+    name: 'John',
+    email: 'john@company.com',
+    password: 'password123',
+    role: 'employee'
+  },
+  {
+    name: 'Sarah',
+    email: 'sarah@company.com',
+    password: 'password123',
+    role: 'manager'
+  },
+  {
+    name: 'Mike',
+    email: 'mike@company.com',
+    password: 'password123',
+    role: 'admin'
+  }
+]);
 
         // Create sample projects
         const projects = await Project.bulkCreate([
