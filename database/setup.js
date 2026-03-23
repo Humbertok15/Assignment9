@@ -28,7 +28,21 @@ const User = db.define('User', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    // TODO: Add role field (employee, manager, admin)
+    
+    id="u2"
+const User = sequelize.define('User', {
+  name: DataTypes.STRING,
+  email: DataTypes.STRING,
+  password: DataTypes.STRING,
+  role: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'employee',
+    validate: {
+      isIn: [['employee', 'manager', 'admin']]
+    }
+  }
+});
 });
 
 // Project Model
