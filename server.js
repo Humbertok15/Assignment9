@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
@@ -8,18 +9,51 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(express.json());
+const session = require('express-session');
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+
 
 // Session middleware (TODO: Replace with JWT)
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { 
-        secure: false,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+const jwt = require('jsonwebtoken');
+
+function requireAuth(req, res, next) {
+  try {
+    // 1️⃣ Get Authorization header
+    const authHeader = req.headers.authorization;
+
+    // 2️⃣ Check if header exists
+    if (!authHeader) {
+      return res.status(401).json({ message: 'Authorization header missing' });
     }
-}));
+
+    // 3️⃣ Extract token (Bearer <token>)
+    const token = authHeader.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ message: 'Token missing' });
+    }
+
+    // 4️⃣ Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // 5️⃣ Attach user data to request
+    req.user = decoded;
+
+    // 6️⃣ Continue
+    next();
+
+  } catch (error) {
+    return res.status(401).json({
+      message: 'Invalid or expired token',
+      error: error.message
+    });
+  }
+}
 
 // TODO: Create JWT middleware to replace session auth
 function requireAuth(req, res, next) {
